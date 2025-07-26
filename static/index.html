@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vault Challenge</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background-color: #0f0f0f;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      width: 90%;
+      max-width: 800px;
+    }
+
+    #vault-img {
+      max-width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+      border: 2px solid #444;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #222;
+      margin-bottom: 30px;
+    }
+
+    input {
+      padding: 12px 16px;
+      font-size: 18px;
+      width: 60%;
+      max-width: 300px;
+      border: none;
+      border-radius: 5px;
+      margin-right: 10px;
+      background-color: #222;
+      color: #0f0;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      background-color: #0f0;
+      color: #000;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    button:hover {
+      background-color: #0c0;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 20px;
+      color: red;
+    }
+
+    #next-link {
+      display: none;
+      margin-top: 25px;
+      font-size: 18px;
+      color: #0f0;
+      text-decoration: underline;
+    }
+
+    #next-link:hover {
+      color: #4f4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img id="vault-img" src="vault-image.jpg" alt="Vault"/>
+    <div>
+      <input id="code-input" type="text" placeholder="Enter code"/>
+      <button onclick="submitCode()">Unlock</button>
+    </div>
+    <div id="status">🔒 Locked</div>
+    <a id="next-link" href="#" target="_blank">→ Proceed to Next Challenge</a>
+  </div>
+
+  <script>
+    async function submitCode() {
+      const code = document.getElementById('code-input').value;
+      const res = await fetch('/api/unlock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+      const status = document.getElementById('status');
+      const link = document.getElementById('next-link');
+      if (data.success) {
+        status.textContent = '✅ Vault Unlocked';
+        status.style.color = 'lime';
+        link.href = data.next;
+        link.style.display = 'inline-block';
+      } else {
+        status.textContent = '🔒 Incorrect Passphrase';
+        status.style.color = 'red';
+        link.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

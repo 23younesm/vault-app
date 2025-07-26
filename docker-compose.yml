@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  vault-site:
+    build: .
+    ports:
+      - "8888:5000"
+    environment:
+      - VAULT_PASSWORD=correcthorsebatterystaple
+      - NEXT_CHALLENGE_URL=https://example.com/next
